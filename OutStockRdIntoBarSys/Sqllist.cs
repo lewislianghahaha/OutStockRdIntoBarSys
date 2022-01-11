@@ -21,23 +21,7 @@
             return _result;
         }
 
-        /// <summary>
-        /// 审核使用
-        /// 作用: (通过View_OUTSTOCKPda视图获取内容)
-        /// 1)若判断所查出库单号在[T_K3SalesOut]存在,就更新‘qty_req’‘FRemarkid’‘Flastop_time’这三项
-        /// 2)若没有记录,就进行插入(注:插入时不用对Flastop_time进行插入值,只需插入FCreate_time值便可)
-        /// </summary>
-        /// <param name="orderno"></param>
-        /// <returns></returns>
-        public string Approve(string orderno)
-        {
-            _result = $@"
-                            
-                        ";
-
-            return _result;
-        }
-
+        #region 审核使用
         /// <summary>
         /// 根据销售出库单查询View_OUTSTOCKPda内的记录
         /// </summary>
@@ -93,6 +77,6 @@
             }
             return _result;
         }
-
+        #endregion
     }
 }
