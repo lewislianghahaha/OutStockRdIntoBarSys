@@ -50,61 +50,65 @@ namespace OutStockRdIntoBarSys
                 //根据‘销售出库单号’获取条码库.T_K3SalesOut相关记录
                 var barCode = UseSqlSearchIntoDt(1, sqllist.Get_SearchBarRecord(orderno)).Copy();
 
-                //若从T_K3SalesOut表没有找到相关记录,就使用k3ViewDt进行插入,有就进行更新
-                if (barCode.Rows.Count == 0)
+                //需k3ViewDt有记录才可以继续
+                if (k3ViewDt.Rows.Count > 0)
                 {
-                   //执行插入,将k3ViewDt的值插入至临时表内(用于插入至条码表)
-                    foreach (DataRow rows in k3ViewDt.Rows)
+                    //若从T_K3SalesOut表没有找到相关记录,就使用k3ViewDt进行插入,有就进行更新
+                    if (barCode.Rows.Count == 0)
                     {
-                        var newrow = inserttemp.NewRow();
-                        newrow[1] = rows[0];     //doc_no
-                        newrow[2] = rows[1];     //doc_catalog
-                        newrow[3] = rows[2];     //op_time
-                        newrow[4] = rows[3];     //line_no
-                        newrow[5] = rows[4];     //doc_status
-                        newrow[6] = rows[5];     //customer_no
-                        newrow[7] = rows[6];     //FNAME
-                        newrow[8] = rows[7];     //customer_desc
-                        newrow[9] = rows[8];     //sku_no
-                        newrow[10] = rows[9];    //sku_desc
-                        newrow[11] = rows[10];   //sku_catalog
-                        newrow[12] = rows[11];   //unit
-                        newrow[13] = rows[12];   //qty_req
-                        newrow[14] = rows[13];   //pack_spec
-                        newrow[15] = rows[14];   //pack_gz
-                        newrow[16] = rows[15];   //pack_xz
-                        newrow[17] = rows[16];   //pack_jz
-                        newrow[18] = rows[17];   //site_no1
-                        newrow[19] = rows[18];   //site_desc1
-                        newrow[20] = rows[19];   //doc_remark
-                        newrow[21] = rows[20];   //doc_remarkentry
-                        newrow[22] = rows[21];   //site_no2
-                        newrow[23] = rows[22];   //site_desc2
-                        newrow[24] = rows[23];   //PICI
-                        newrow[25] = rows[24];   //FRemarkid
-                        newrow[26] = rows[25];   //FCreate_time
-                        inserttemp.Rows.Add(newrow);
+                        //执行插入,将k3ViewDt的值插入至临时表内(用于插入至条码表)
+                        foreach (DataRow rows in k3ViewDt.Rows)
+                        {
+                            var newrow = inserttemp.NewRow();
+                            newrow[1] = rows[0];     //doc_no
+                            newrow[2] = rows[1];     //doc_catalog
+                            newrow[3] = rows[2];     //op_time
+                            newrow[4] = rows[3];     //line_no
+                            newrow[5] = rows[4];     //doc_status
+                            newrow[6] = rows[5];     //customer_no
+                            newrow[7] = rows[6];     //FNAME
+                            newrow[8] = rows[7];     //customer_desc
+                            newrow[9] = rows[8];     //sku_no
+                            newrow[10] = rows[9];    //sku_desc
+                            newrow[11] = rows[10];   //sku_catalog
+                            newrow[12] = rows[11];   //unit
+                            newrow[13] = rows[12];   //qty_req
+                            newrow[14] = rows[13];   //pack_spec
+                            newrow[15] = rows[14];   //pack_gz
+                            newrow[16] = rows[15];   //pack_xz
+                            newrow[17] = rows[16];   //pack_jz
+                            newrow[18] = rows[17];   //site_no1
+                            newrow[19] = rows[18];   //site_desc1
+                            newrow[20] = rows[19];   //doc_remark
+                            newrow[21] = rows[20];   //doc_remarkentry
+                            newrow[22] = rows[21];   //site_no2
+                            newrow[23] = rows[22];   //site_desc2
+                            newrow[24] = rows[23];   //PICI
+                            newrow[25] = rows[24];   //FRemarkid
+                            newrow[26] = rows[25];   //FCreate_time
+                            inserttemp.Rows.Add(newrow);
+                        }
                     }
-                }
-                else
-                {
-                    //执行插入,将k3ViewDt的值插入至临时表内(用于更新至条码表)
-                    foreach (DataRow rows in k3ViewDt.Rows)
+                    else
                     {
-                        var newrow = uptemp.NewRow();
-                        newrow[0] = rows[0];      //doc_no
-                        newrow[1] = rows[8];      //sku_no
-                        newrow[2] = rows[12];     //qty_req
-                        newrow[3] = rows[24];     //FRemarkid
-                        newrow[4] = rows[26];     //Flastop_time
-                        uptemp.Rows.Add(newrow);
+                        //执行插入,将k3ViewDt的值插入至临时表内(用于更新至条码表)
+                        foreach (DataRow rows in k3ViewDt.Rows)
+                        {
+                            var newrow = uptemp.NewRow();
+                            newrow[0] = rows[0];      //doc_no
+                            newrow[1] = rows[8];      //sku_no
+                            newrow[2] = rows[12];     //qty_req
+                            newrow[3] = rows[24];     //FRemarkid
+                            newrow[4] = rows[26];     //Flastop_time
+                            uptemp.Rows.Add(newrow);
+                        }
                     }
+                    //最后将得出的结果进行插入或更新
+                    if (inserttemp.Rows.Count > 0)
+                        ImportDtToDb("T_K3SalesOut", inserttemp);
+                    if (uptemp.Rows.Count > 0)
+                        UpdateDbFromDt("T_K3SalesOut", uptemp);
                 }
-                //最后将得出的结果进行插入或更新
-                if (inserttemp.Rows.Count>0)
-                    ImportDtToDb("T_K3SalesOut", inserttemp);
-                if(uptemp.Rows.Count>0)
-                    UpdateDbFromDt("T_K3SalesOut", uptemp);
             }
             catch (Exception ex)
             {
