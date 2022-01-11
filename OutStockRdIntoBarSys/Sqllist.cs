@@ -43,7 +43,9 @@
         /// <returns></returns>
         public string Get_SearchBarRecord(string orderno)
         {
-            _result = $@"SELECT * FROM T_K3SalesOut WHERE doc_no='{orderno}'";
+            _result = $@"
+                            SELECT * FROM T_K3SalesOut WHERE doc_no='{orderno}'
+                        ";
             return _result;
         }
 
