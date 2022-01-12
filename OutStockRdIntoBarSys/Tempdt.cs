@@ -13,7 +13,7 @@ namespace OutStockRdIntoBarSys
         public DataTable InsertBarTemp()
         {
             var dt = new DataTable();
-            for (var i = 0; i < 28; i++)
+            for (var i = 0; i < 27; i++)
             {
                 var dc = new DataColumn();
 
@@ -21,116 +21,112 @@ namespace OutStockRdIntoBarSys
                 {
                     //记录每行的行ID
                     case 0:
-                        dc.ColumnName = "Id";
-                        dc.DataType = Type.GetType("System.Int32");
-                        break;
-                    case 1:
                         dc.ColumnName = "doc_no";
                         dc.DataType = Type.GetType("System.String");
                         break;
-                    case 2:
+                    case 1:
                         dc.ColumnName = "doc_catalog";
                         dc.DataType = Type.GetType("System.String");
                         break;
-                    case 3:
+                    case 2:
                         dc.ColumnName = "op_time";
                         dc.DataType = Type.GetType("System.DateTime"); 
                         break;
-                    case 4:
+                    case 3:
                         dc.ColumnName = "line_no";
                         dc.DataType = Type.GetType("System.Int32");
                         break;
-                    case 5:
+                    case 4:
                         dc.ColumnName = "doc_status";
                         dc.DataType = Type.GetType("System.String");
                         break;
-                    case 6:
+                    case 5:
                         dc.ColumnName = "customer_no";
                         dc.DataType = Type.GetType("System.String");
                         break;
-                    case 7:
+                    case 6:
                         dc.ColumnName = "FNAME";
                         dc.DataType = Type.GetType("System.String");
                         break;
-                    case 8:
+                    case 7:
                         dc.ColumnName = "customer_desc";
                         dc.DataType = Type.GetType("System.String");
                         break;
-                    case 9:
+                    case 8:
                         dc.ColumnName = "sku_no";
                         dc.DataType = Type.GetType("System.String");
                         break;
-                    case 10:
+                    case 9:
                         dc.ColumnName = "sku_desc";
                         dc.DataType = Type.GetType("System.String");
                         break;
-                    case 11:
+                    case 10:
                         dc.ColumnName = "sku_catalog";
                         dc.DataType = Type.GetType("System.String");
                         break;
-                    case 12:
+                    case 11:
                         dc.ColumnName = "unit";
                         dc.DataType = Type.GetType("System.String");
                         break;
-                    case 13:
+                    case 12:
                         dc.ColumnName = "qty_req";
                         dc.DataType = Type.GetType("System.Decimal"); 
                         break;
-                    case 14:
+                    case 13:
                         dc.ColumnName = "pack_spec";
                         dc.DataType = Type.GetType("System.Decimal");
                         break;
-                    case 15:
+                    case 14:
                         dc.ColumnName = "pack_gz";
                         dc.DataType = Type.GetType("System.Decimal");
                         break;
-                    case 16:
+                    case 15:
                         dc.ColumnName = "pack_xz";
                         dc.DataType = Type.GetType("System.Decimal");
                         break;
-                    case 17:
+                    case 16:
                         dc.ColumnName = "pack_jz";
                         dc.DataType = Type.GetType("System.Decimal");
                         break;
-                    case 18:
+                    case 17:
                         dc.ColumnName = "site_no1";
                         dc.DataType = Type.GetType("System.String");
                         break;
-                    case 19:
+                    case 18:
                         dc.ColumnName = "site_desc1";
                         dc.DataType = Type.GetType("System.String");
                         break;
-                    case 20:
+                    case 19:
                         dc.ColumnName = "doc_remark";
                         dc.DataType = Type.GetType("System.String");
                         break;
-                    case 21:
+                    case 20:
                         dc.ColumnName = "doc_remarkentry";
                         dc.DataType = Type.GetType("System.String");
                         break;
-                    case 22:
+                    case 21:
                         dc.ColumnName = "site_no2";
                         dc.DataType = Type.GetType("System.String");
                         break;
-                    case 23:
+                    case 22:
                         dc.ColumnName = "site_desc2";
                         dc.DataType = Type.GetType("System.String");
                         break;
-                    case 24:
+                    case 23:
                         dc.ColumnName = "PICI";
                         dc.DataType = Type.GetType("System.String");
                         break;
-                    case 25:
+                    case 24:
                         dc.ColumnName = "FRemarkid";
                         dc.DataType = Type.GetType("System.Int32");
                         break;
                     //创建日期(插入时使用)
-                    case 26:
+                    case 25:
                         dc.ColumnName = "FCreate_time";
                         dc.DataType = Type.GetType("System.DateTime"); 
                         break;
                     //最后修改日期(更新时使用)
-                    case 27:
+                    case 26:
                         dc.ColumnName = "Flastop_time";
                         dc.DataType = Type.GetType("System.DateTime");
                         break;

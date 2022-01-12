@@ -57,7 +57,7 @@
         public string SearchUpdateTable(string tableName)
         {
             _result = $@"
-                          SELECT Top 1 a.*
+                          SELECT Top 1 a.doc_no,a.sku_no,a.qty_req,a.FRemarkid,a.Flastop_time
                           FROM {tableName} a
                         ";
             return _result;

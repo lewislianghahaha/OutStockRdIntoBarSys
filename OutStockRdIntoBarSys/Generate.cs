@@ -60,32 +60,32 @@ namespace OutStockRdIntoBarSys
                         foreach (DataRow rows in k3ViewDt.Rows)
                         {
                             var newrow = inserttemp.NewRow();
-                            newrow[1] = rows[0];     //doc_no
-                            newrow[2] = rows[1];     //doc_catalog
-                            newrow[3] = rows[2];     //op_time
-                            newrow[4] = rows[3];     //line_no
-                            newrow[5] = rows[4];     //doc_status
-                            newrow[6] = rows[5];     //customer_no
-                            newrow[7] = rows[6];     //FNAME
-                            newrow[8] = rows[7];     //customer_desc
-                            newrow[9] = rows[8];     //sku_no
-                            newrow[10] = rows[9];    //sku_desc
-                            newrow[11] = rows[10];   //sku_catalog
-                            newrow[12] = rows[11];   //unit
-                            newrow[13] = rows[12];   //qty_req
-                            newrow[14] = rows[13];   //pack_spec
-                            newrow[15] = rows[14];   //pack_gz
-                            newrow[16] = rows[15];   //pack_xz
-                            newrow[17] = rows[16];   //pack_jz
-                            newrow[18] = rows[17];   //site_no1
-                            newrow[19] = rows[18];   //site_desc1
-                            newrow[20] = rows[19];   //doc_remark
-                            newrow[21] = rows[20];   //doc_remarkentry
-                            newrow[22] = rows[21];   //site_no2
-                            newrow[23] = rows[22];   //site_desc2
-                            newrow[24] = rows[23];   //PICI
-                            newrow[25] = rows[24];   //FRemarkid
-                            newrow[26] = rows[25];   //FCreate_time
+                            newrow[0] = rows[0];     //doc_no
+                            newrow[1] = rows[1];     //doc_catalog
+                            newrow[2] = rows[2];     //op_time
+                            newrow[3] = rows[3];     //line_no
+                            newrow[4] = rows[4];     //doc_status
+                            newrow[5] = rows[5];     //customer_no
+                            newrow[6] = rows[6];     //FNAME
+                            newrow[7] = rows[7];     //customer_desc
+                            newrow[8] = rows[8];     //sku_no
+                            newrow[9] = rows[9];     //sku_desc
+                            newrow[10] = rows[10];   //sku_catalog
+                            newrow[11] = rows[11];   //unit
+                            newrow[12] = rows[12];   //qty_req
+                            newrow[13] = rows[13];   //pack_spec
+                            newrow[14] = rows[14];   //pack_gz
+                            newrow[15] = rows[15];   //pack_xz
+                            newrow[16] = rows[16];   //pack_jz
+                            newrow[17] = rows[17];   //site_no1
+                            newrow[18] = rows[18];   //site_desc1
+                            newrow[19] = rows[19];   //doc_remark
+                            newrow[20] = rows[20];   //doc_remarkentry
+                            newrow[21] = rows[21];   //site_no2
+                            newrow[22] = rows[22];   //site_desc2
+                            newrow[23] = rows[23];   //PICI
+                            newrow[24] = rows[24];   //FRemarkid
+                            newrow[25] = rows[25];   //FCreate_time
                             inserttemp.Rows.Add(newrow);
                         }
                     }
@@ -95,11 +95,11 @@ namespace OutStockRdIntoBarSys
                         foreach (DataRow rows in k3ViewDt.Rows)
                         {
                             var newrow = uptemp.NewRow();
-                            newrow[0] = rows[0];      //doc_no
-                            newrow[1] = rows[8];      //sku_no
-                            newrow[2] = rows[12];     //qty_req
-                            newrow[3] = rows[24];     //FRemarkid
-                            newrow[4] = rows[26];     //Flastop_time
+                            newrow[0] = Convert.ToString(rows[0]);     //doc_no
+                            newrow[1] = Convert.ToString(rows[8]);     //sku_no
+                            newrow[2] = Convert.ToDecimal(rows[12]);   //qty_req
+                            newrow[3] = Convert.ToInt32(rows[24]);     //FRemarkid
+                            newrow[4] = Convert.ToDateTime(rows[26]);  //Flastop_time
                             uptemp.Rows.Add(newrow);
                         }
                     }

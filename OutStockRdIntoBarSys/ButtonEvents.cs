@@ -22,14 +22,16 @@ namespace OutStockRdIntoBarSys
             {
                 //执行反审核相关操作
                 var result = generate.Reject(dhstr);
-                View.ShowMessage(result == "Finish" ? "操作完成" : $"操作异常,原因:'{result}'");
+                //todo:当出现异常时才提示
+                View.ShowMessage(result == "Finish" ? "操作完成" : $"出库数据与条码系统交互操作异常,原因:'{result}'");
             }
             //销售出库单-审核进执行
             else if (e.BarItemKey == "tbApprove")
             {
                 //执行审核相关操作
                 var result = generate.Approve(dhstr);
-                View.ShowMessage(result == "Finish" ? "操作完成" : $"操作异常,原因:'{result}'");
+                //todo:当出现异常时才提示
+                View.ShowMessage(result == "Finish" ? "操作完成" : $"出库数据与条码系统交互操作异常,原因:'{result}'");
             }
         }
     }
