@@ -56,51 +56,34 @@ namespace OutStockRdIntoBarSys
                     //若从T_K3SalesOut表没有找到相关记录,就使用k3ViewDt进行插入,有就进行更新
                     if (barCode.Rows.Count == 0)
                     {
-                        //执行插入,将k3ViewDt的值插入至临时表内(用于插入至条码表)
-                        foreach (DataRow rows in k3ViewDt.Rows)
-                        {
-                            var newrow = inserttemp.NewRow();
-                            newrow[0] = rows[0];     //doc_no
-                            newrow[1] = rows[1];     //doc_catalog
-                            newrow[2] = rows[2];     //op_time
-                            newrow[3] = rows[3];     //line_no
-                            newrow[4] = rows[4];     //doc_status
-                            newrow[5] = rows[5];     //customer_no
-                            newrow[6] = rows[6];     //FNAME
-                            newrow[7] = rows[7];     //customer_desc
-                            newrow[8] = rows[8];     //sku_no
-                            newrow[9] = rows[9];     //sku_desc
-                            newrow[10] = rows[10];   //sku_catalog
-                            newrow[11] = rows[11];   //unit
-                            newrow[12] = rows[12];   //qty_req
-                            newrow[13] = rows[13];   //pack_spec
-                            newrow[14] = rows[14];   //pack_gz
-                            newrow[15] = rows[15];   //pack_xz
-                            newrow[16] = rows[16];   //pack_jz
-                            newrow[17] = rows[17];   //site_no1
-                            newrow[18] = rows[18];   //site_desc1
-                            newrow[19] = rows[19];   //doc_remark
-                            newrow[20] = rows[20];   //doc_remarkentry
-                            newrow[21] = rows[21];   //site_no2
-                            newrow[22] = rows[22];   //site_desc2
-                            newrow[23] = rows[23];   //PICI
-                            newrow[24] = rows[24];   //FRemarkid
-                            newrow[25] = rows[25];   //FCreate_time
-                            inserttemp.Rows.Add(newrow);
-                        }
+                        inserttemp.Merge(InsertDtIntoInsertTempDt(k3ViewDt, inserttemp));
                     }
+                    //若在T_K3SalesOut表有记录,就需要先使用‘单据编号’及‘物料编码’放到T_K3SalesOut表内作判断,若存在即更新;反之插入记录
+                    //注:将当前"判断行"插入至临时表,而不是每次循环都将k3ViewDt表记录插入
                     else
                     {
-                        //执行插入,将k3ViewDt的值插入至临时表内(用于更新至条码表)
+                        //获取k3ViewDt的表结构
+                        var k3Tempdt = k3ViewDt.Clone();
+
                         foreach (DataRow rows in k3ViewDt.Rows)
                         {
-                            var newrow = uptemp.NewRow();
-                            newrow[0] = Convert.ToString(rows[0]);     //doc_no
-                            newrow[1] = Convert.ToString(rows[8]);     //sku_no
-                            newrow[2] = Convert.ToDecimal(rows[12]);   //qty_req
-                            newrow[3] = Convert.ToInt32(rows[24]);     //FRemarkid
-                            newrow[4] = Convert.ToDateTime(rows[26]);  //Flastop_time
-                            uptemp.Rows.Add(newrow);
+                            var dtlrows = barCode.Select("doc_no='" + Convert.ToString(rows[0]) + "' and sku_no='" + Convert.ToString(rows[8]) + "'");
+
+                            //将"当前"循环的rows行插入至临时表(K3TempDt) 注:需插入的列与临时表一致(包括列顺序),才可使用ImportRow()方法
+                            k3Tempdt.ImportRow(rows);
+
+                            //若存在,就更新
+                            if (dtlrows.Length > 0)
+                            {
+                                uptemp.Merge(InsertDtIntoUpdateTempdt(k3Tempdt, uptemp));
+                            }
+                            //反之进行插入操作
+                            else
+                            {
+                                inserttemp.Merge(InsertDtIntoInsertTempDt(k3Tempdt, inserttemp));
+                            }
+                            //当前行循环结束后将行记录删除;令k3Tempdt只记录当前循环行信息,不包括以前循环的记录
+                            k3Tempdt.Rows.Clear();
                         }
                     }
                     //最后将得出的结果进行插入或更新
@@ -116,6 +99,69 @@ namespace OutStockRdIntoBarSys
             }
 
             return result;
+        }
+
+        /// <summary>
+        /// 将K3记录插入至临时表(插入使用)
+        /// </summary>
+        /// <returns></returns>
+        private DataTable InsertDtIntoInsertTempDt(DataTable k3ViewDt, DataTable inserttemp)
+        {
+            //执行插入,将k3ViewDt的值插入至临时表内(用于插入至条码表)
+            foreach (DataRow rows in k3ViewDt.Rows)
+            {
+                var newrow = inserttemp.NewRow();
+                newrow[0] = rows[0];     //doc_no
+                newrow[1] = rows[1];     //doc_catalog
+                newrow[2] = rows[2];     //op_time
+                newrow[3] = rows[3];     //line_no
+                newrow[4] = rows[4];     //doc_status
+                newrow[5] = rows[5];     //customer_no
+                newrow[6] = rows[6];     //FNAME
+                newrow[7] = rows[7];     //customer_desc
+                newrow[8] = rows[8];     //sku_no
+                newrow[9] = rows[9];     //sku_desc
+                newrow[10] = rows[10];   //sku_catalog
+                newrow[11] = rows[11];   //unit
+                newrow[12] = rows[12];   //qty_req
+                newrow[13] = rows[13];   //pack_spec
+                newrow[14] = rows[14];   //pack_gz
+                newrow[15] = rows[15];   //pack_xz
+                newrow[16] = rows[16];   //pack_jz
+                newrow[17] = rows[17];   //site_no1
+                newrow[18] = rows[18];   //site_desc1
+                newrow[19] = rows[19];   //doc_remark
+                newrow[20] = rows[20];   //doc_remarkentry
+                newrow[21] = rows[21];   //site_no2
+                newrow[22] = rows[22];   //site_desc2
+                newrow[23] = rows[23];   //PICI
+                newrow[24] = rows[24];   //FRemarkid
+                newrow[25] = rows[25];   //FCreate_time
+                inserttemp.Rows.Add(newrow);
+            }
+            return inserttemp;
+        }
+
+        /// <summary>
+        /// 将K3记录插入至临时表(更新使用)
+        /// </summary>
+        /// <param name="k3ViewDt"></param>
+        /// <param name="uptemp"></param>
+        /// <returns></returns>
+        private DataTable InsertDtIntoUpdateTempdt(DataTable k3ViewDt, DataTable uptemp)
+        {
+            //执行插入,将k3ViewDt的值插入至临时表内(用于更新至条码表)
+            foreach (DataRow rows in k3ViewDt.Rows)
+            {
+                var newrow = uptemp.NewRow();
+                newrow[0] = Convert.ToString(rows[0]);     //doc_no
+                newrow[1] = Convert.ToString(rows[8]);     //sku_no
+                newrow[2] = Convert.ToDecimal(rows[12]);   //qty_req
+                newrow[3] = Convert.ToInt32(rows[24]);     //FRemarkid
+                newrow[4] = Convert.ToDateTime(rows[26]);  //Flastop_time
+                uptemp.Rows.Add(newrow);
+            }
+            return uptemp;
         }
 
         /// <summary>
