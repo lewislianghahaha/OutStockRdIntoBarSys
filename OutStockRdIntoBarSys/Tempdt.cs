@@ -143,7 +143,7 @@ namespace OutStockRdIntoBarSys
         public DataTable UpBarTemp()
         {
             var dt = new DataTable();
-            for (var i = 0; i < 5; i++)
+            for (var i = 0; i < 6; i++)
             {
                 var dc = new DataColumn();
 
@@ -163,11 +163,15 @@ namespace OutStockRdIntoBarSys
                         dc.DataType = Type.GetType("System.Decimal");
                         break;
                     case 3:
+                        dc.ColumnName = "line_no";
+                        dc.DataType = Type.GetType("System.Int32");
+                        break;
+                    case 4:
                         dc.ColumnName = "FRemarkid";
                         dc.DataType = Type.GetType("System.Int32");
                         break;
                     //最后修改日期(更新时使用)
-                    case 4:
+                    case 5:
                         dc.ColumnName = "Flastop_time";
                         dc.DataType = Type.GetType("System.DateTime");
                         break;

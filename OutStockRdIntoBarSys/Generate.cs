@@ -183,8 +183,9 @@ namespace OutStockRdIntoBarSys
                 newrow[0] = Convert.ToString(rows[0]);     //doc_no
                 newrow[1] = Convert.ToString(rows[8]);     //sku_no
                 newrow[2] = Convert.ToDecimal(rows[12]);   //qty_req
-                newrow[3] = Convert.ToInt32(rows[24]);     //FRemarkid
-                newrow[4] = Convert.ToDateTime(rows[26]);  //Flastop_time
+                newrow[3] = Convert.ToInt32(rows[3]);      //line_no
+                newrow[4] = Convert.ToInt32(rows[24]);     //FRemarkid
+                newrow[5] = Convert.ToDateTime(rows[26]);  //Flastop_time
                 uptemp.Rows.Add(newrow);
             }
             return uptemp;
@@ -312,6 +313,7 @@ namespace OutStockRdIntoBarSys
                     da.UpdateCommand.Parameters.Add("@doc_no", SqlDbType.NVarChar, 100, "doc_no");
                     da.UpdateCommand.Parameters.Add("@sku_no", SqlDbType.NVarChar, 100, "sku_no");
                     da.UpdateCommand.Parameters.Add("@qty_req", SqlDbType.Decimal, 4, "qty_req");
+                    da.UpdateCommand.Parameters.Add("@line_no", SqlDbType.Int, 8, "line_no");
                     da.UpdateCommand.Parameters.Add("@FRemarkid", SqlDbType.Int, 8, "FRemarkid");
                     da.UpdateCommand.Parameters.Add("@Flastop_time", SqlDbType.DateTime, 10, "Flastop_time");
                     break;
