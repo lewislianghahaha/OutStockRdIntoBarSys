@@ -365,7 +365,7 @@ namespace OutStockRdIntoBarSys
 
             if (conid == 0)
             {
-                strcon = @"Data Source='192.168.1.228';Initial Catalog='AIS20211022091225';Persist Security Info=True;User ID='sa'; Password='kingdee';
+                strcon = @"Data Source='192.168.1.228';Initial Catalog='AIS20181204095717';Persist Security Info=True;User ID='sa'; Password='kingdee';
                        Pooling=true;Max Pool Size=40000;Min Pool Size=0";
             }
             else
