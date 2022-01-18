@@ -50,35 +50,55 @@
         }
 
         /// <summary>
-        /// 根据表名获取查询表体语句(更新时使用) 只显示TOP 1记录
+        /// 根据typeid获取对应的模板表记录 只显示TOP 1记录
         /// </summary>
-        /// <param name="tableName"></param>
+        /// <param name="typeid"></param>
         /// <returns></returns>
-        public string SearchUpdateTable(string tableName)
+        public string SearchUpdateTable(int typeid)
         {
-            _result = $@"
+            //0:更新记录 1:更新FRemarkid=1
+            if (typeid == 0)
+            {
+                _result = $@"
                           SELECT Top 1 a.doc_no,a.sku_no,a.qty_req,a.FRemarkid,a.Flastop_time
-                          FROM {tableName} a
+                          FROM T_K3SalesOut a
                         ";
+            }
+            else
+            {
+                _result = $@"
+                          SELECT Top 1 a.doc_no,a.sku_no,a.FRemarkid,a.Flastop_time
+                          FROM T_K3SalesOut a
+                        ";
+            }
+
             return _result;
         }
 
         /// <summary>
         /// 条码库.T_K3SalesOut更新语句
         /// </summary>
-        /// <param name="tablename"></param>
+        /// <param name="typeid">0:更新记录 1:更新FRemarkid=1</param>
         /// <returns></returns>
-        public string UpdateEntry(string tablename)
+        public string UpdateEntry(int typeid)
         {
-            switch (tablename)
+            switch (typeid)
             {
-                case "T_K3SalesOut":
-                    _result = @"UPDATE dbo.T_K3SalesOut SET qty_req=@qty_req,FRemarkid=@FRemarkid,Flastop_time=@Flastop_time
+                case 0:
+                    _result = @"
+                                UPDATE dbo.T_K3SalesOut SET qty_req=@qty_req,FRemarkid=@FRemarkid,Flastop_time=@Flastop_time
                                 WHERE doc_no=@doc_no and sku_no=@sku_no";
+                    break;
+                case 1:
+                    _result = @"
+                                  UPDATE dbo.T_K3SalesOut SET FRemarkid=@FRemarkid,Flastop_time=@Flastop_time
+                                  WHERE doc_no=@doc_no and sku_no=@sku_no
+                                ";
                     break;
             }
             return _result;
         }
+
         #endregion
     }
 }

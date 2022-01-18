@@ -176,5 +176,42 @@ namespace OutStockRdIntoBarSys
             }
             return dt;
         }
+
+        /// <summary>
+        /// 更新T_K3SalesOut需要取消的记录
+        /// </summary>
+        /// <returns></returns>
+        public DataTable CannelTemp()
+        {
+            var dt = new DataTable();
+            for (var i = 0; i < 4; i++)
+            {
+                var dc = new DataColumn();
+
+                switch (i)
+                {
+                    //记录每行的行ID
+                    case 0:
+                        dc.ColumnName = "doc_no";
+                        dc.DataType = Type.GetType("System.String");
+                        break;
+                    case 1:
+                        dc.ColumnName = "sku_no";
+                        dc.DataType = Type.GetType("System.String");
+                        break;
+                    case 2:
+                        dc.ColumnName = "FRemarkid";
+                        dc.DataType = Type.GetType("System.Int32");
+                        break;
+                    //最后修改日期(更新时使用)
+                    case 3:
+                        dc.ColumnName = "Flastop_time";
+                        dc.DataType = Type.GetType("System.DateTime");
+                        break;
+                }
+                dt.Columns.Add(dc);
+            }
+            return dt;
+        }
     }
 }

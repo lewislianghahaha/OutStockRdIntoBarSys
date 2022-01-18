@@ -42,6 +42,8 @@ namespace OutStockRdIntoBarSys
 
             var inserttemp = tempdt.InsertBarTemp();
             var uptemp = tempdt.UpBarTemp();
+            //保存设置条码表不显示的记录
+            var canneltemp = tempdt.CannelTemp();
 
             try
             {
@@ -65,15 +67,34 @@ namespace OutStockRdIntoBarSys
                         //获取k3ViewDt的表结构
                         var k3Tempdt = k3ViewDt.Clone();
 
+                        //检测barCode内的记录是否不在k3ViewDt存在,是:则插入至cannelTempdt内,在最后将这些记录的FRemarkid设置为1
+                        //作用:将K3删除的记录在条码表内设置为不可见
+                        foreach (DataRow rows in barCode.Rows)
+                        {
+                            var dtlrows = k3ViewDt.Select("doc_no='" + Convert.ToString(rows[0]) + "' and sku_no='" + Convert.ToString(rows[8]) + "'").Length;
+
+                            //若存在则继续,反之,即插入至临时表
+                            if (dtlrows > 0) continue;
+                            k3Tempdt.ImportRow(rows);
+                            //若存在,即插入至canneltemp表内
+                            canneltemp.Merge(InsertDtIntoCannelTempDt(k3Tempdt, canneltemp));
+                            //当前行循环结束后将行记录删除;令k3Tempdt只记录当前循环行信息,不包括以前循环的记录
+                            k3Tempdt.Rows.Clear();
+                        }
+
+                        //var a3 = canneltemp.Copy();
+
+                        //检测k3ViewDt内的记录是否在barCode内存在,是:更新  否:插入
                         foreach (DataRow rows in k3ViewDt.Rows)
                         {
-                            var dtlrows = barCode.Select("doc_no='" + Convert.ToString(rows[0]) + "' and sku_no='" + Convert.ToString(rows[8]) + "'");
+                            var dtlrows = barCode.Select("doc_no='" + Convert.ToString(rows[0]) + "' and sku_no='" + Convert.ToString(rows[8]) + "'").Length;
 
                             //将"当前"循环的rows行插入至临时表(K3TempDt) 注:需插入的列与临时表一致(包括列顺序),才可使用ImportRow()方法
                             k3Tempdt.ImportRow(rows);
+                            //var a = k3Tempdt.Copy();
 
                             //若存在,就更新
-                            if (dtlrows.Length > 0)
+                            if (dtlrows > 0)
                             {
                                 uptemp.Merge(InsertDtIntoUpdateTempdt(k3Tempdt, uptemp));
                             }
@@ -85,12 +106,17 @@ namespace OutStockRdIntoBarSys
                             //当前行循环结束后将行记录删除;令k3Tempdt只记录当前循环行信息,不包括以前循环的记录
                             k3Tempdt.Rows.Clear();
                         }
+                        //var a1 = uptemp.Copy();
+                        //var b1 = inserttemp.Copy();
                     }
-                    //最后将得出的结果进行插入或更新
+                    //将得出的结果进行插入或更新
                     if (inserttemp.Rows.Count > 0)
                         ImportDtToDb("T_K3SalesOut", inserttemp);
                     if (uptemp.Rows.Count > 0)
-                        UpdateDbFromDt("T_K3SalesOut", uptemp);
+                        UpdateDbFromDt("T_K3SalesOut", uptemp, 0);
+                    //将需要取消的记录更新T_K3SalesOut.FRemarkid
+                    if (canneltemp.Rows.Count > 0)
+                        UpdateDbFromDt("T_K3SalesOut", canneltemp, 1);
                 }
             }
             catch (Exception ex)
@@ -165,6 +191,26 @@ namespace OutStockRdIntoBarSys
         }
 
         /// <summary>
+        /// 将K3记录插入至临时表(取消不显示使用)
+        /// </summary>
+        /// <param name="k3ViewDt"></param>
+        /// <param name="canneltemp"></param>
+        /// <returns></returns>
+        private DataTable InsertDtIntoCannelTempDt(DataTable k3ViewDt, DataTable canneltemp)
+        {
+            foreach (DataRow rows in k3ViewDt.Rows)
+            {
+                var newrow = canneltemp.NewRow();
+                newrow[0] = Convert.ToString(rows[0]);     //doc_no
+                newrow[1] = Convert.ToString(rows[8]);     //sku_no
+                newrow[2] = 1;                             //FRemarkid
+                newrow[3] = DateTime.Now.ToLocalTime();    //Flastop_time
+                canneltemp.Rows.Add(newrow);
+            }
+            return canneltemp;
+        }
+
+        /// <summary>
         /// 根据SQL语句查询得出对应的DT
         /// </summary>
         /// <param name="conid">0:连接K3数据库,1:连接条码库</param>
@@ -211,20 +257,23 @@ namespace OutStockRdIntoBarSys
         /// <summary>
         /// 根据指定条件对数据表进行批量更新
         /// </summary>
-        public void UpdateDbFromDt(string tablename, DataTable dt)
+        /// <param name="tablename"></param>
+        /// <param name="dt"></param>
+        /// <param name="typeid">0:更新记录 1:更新FRemarkid=1</param>
+        public void UpdateDbFromDt(string tablename, DataTable dt, int typeid)
         {
             var sqladpter = new SqlDataAdapter();
             var ds = new DataSet();
 
-            //根据表格名称获取对应的模板表记录
-            var searList = sqllist.SearchUpdateTable(tablename);
+            //根据typeid获取对应的模板表记录
+            var searList = sqllist.SearchUpdateTable(typeid);
 
             using (sqladpter.SelectCommand = new SqlCommand(searList, GetCloudConn(1)))
             {
                 //将查询的记录填充至ds(查询表记录;后面的更新作赋值使用)
                 sqladpter.Fill(ds);
                 //建立更新模板相关信息(包括更新语句 以及 变量参数)
-                sqladpter = GetUpdateAdapter(tablename, GetCloudConn(1), sqladpter);
+                sqladpter = GetUpdateAdapter(typeid, GetCloudConn(1), sqladpter);
                 //开始更新(注:通过对DataSet中存在的表进行循环赋值;并进行更新)
                 for (var i = 0; i < dt.Rows.Count; i++)
                 {
@@ -246,23 +295,29 @@ namespace OutStockRdIntoBarSys
         /// <summary>
         /// 建立更新模板相关信息
         /// </summary>
-        /// <param name="tablename"></param>
+        /// <param name="typeid">0:更新记录 1:更新FRemarkid=1</param>
         /// <param name="conn"></param>
         /// <param name="da"></param>
         /// <returns></returns>
-        private SqlDataAdapter GetUpdateAdapter(string tablename, SqlConnection conn, SqlDataAdapter da)
+        private SqlDataAdapter GetUpdateAdapter(int typeid, SqlConnection conn, SqlDataAdapter da)
         {
             //根据tablename获取对应的更新语句
-            var sqlscript = sqllist.UpdateEntry(tablename);
+            var sqlscript = sqllist.UpdateEntry(typeid);
             da.UpdateCommand = new SqlCommand(sqlscript, conn);
 
             //定义所需的变量参数
-            switch (tablename)
+            switch (typeid)
             {
-                case "T_K3SalesOut":
+                case 0:
                     da.UpdateCommand.Parameters.Add("@doc_no", SqlDbType.NVarChar, 100, "doc_no");
                     da.UpdateCommand.Parameters.Add("@sku_no", SqlDbType.NVarChar, 100, "sku_no");
                     da.UpdateCommand.Parameters.Add("@qty_req", SqlDbType.Decimal, 4, "qty_req");
+                    da.UpdateCommand.Parameters.Add("@FRemarkid", SqlDbType.Int, 8, "FRemarkid");
+                    da.UpdateCommand.Parameters.Add("@Flastop_time", SqlDbType.DateTime, 10, "Flastop_time");
+                    break;
+                case 1:
+                    da.UpdateCommand.Parameters.Add("@doc_no", SqlDbType.NVarChar, 100, "doc_no");
+                    da.UpdateCommand.Parameters.Add("@sku_no", SqlDbType.NVarChar, 100, "sku_no");
                     da.UpdateCommand.Parameters.Add("@FRemarkid", SqlDbType.Int, 8, "FRemarkid");
                     da.UpdateCommand.Parameters.Add("@Flastop_time", SqlDbType.DateTime, 10, "Flastop_time");
                     break;
