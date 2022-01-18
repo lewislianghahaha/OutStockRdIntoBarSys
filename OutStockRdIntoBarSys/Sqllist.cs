@@ -50,7 +50,7 @@
         }
 
         /// <summary>
-        /// 根据typeid获取对应的模板表记录 只显示TOP 1记录
+        /// 根据typeid获取对应的模板表记录 只显示TOP 1记录(更新使用)
         /// </summary>
         /// <param name="typeid"></param>
         /// <returns></returns>
