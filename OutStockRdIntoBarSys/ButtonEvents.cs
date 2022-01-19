@@ -29,8 +29,9 @@ namespace OutStockRdIntoBarSys
                 message = result == "Finish" ? $@"单据编号为'{dhstr}'的销售出库单,与条码系统交互反审核成功! " : $@"出库数据与条码系统交互操作异常,原因:'{result}'";
                 View.ShowMessage(message);
             }
-            //销售出库单-保存时执行
-            else if (e.BarItemKey== "tbSave") //(e.BarItemKey == "tbApprove" || e.BarItemKey == "tbSplitApprove")
+            //销售出库单-当点击 保存 提交 审核时会执行
+            else if (e.BarItemKey== "tbSplitSave" || e.BarItemKey== "tbSave" || e.BarItemKey== "tbSplitSubmit" || e.BarItemKey== "tbSubmit" 
+                     || e.BarItemKey == "tbApprove" || e.BarItemKey == "tbSplitApprove")
             {
                 //执行审核相关操作
                 var result = generate.Approve(dhstr);
