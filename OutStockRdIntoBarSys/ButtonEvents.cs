@@ -29,13 +29,13 @@ namespace OutStockRdIntoBarSys
                 message = result == "Finish" ? $@"单据编号为'{dhstr}'的销售出库单,与条码系统交互反审核成功! " : $@"出库数据与条码系统交互操作异常,原因:'{result}'";
                 View.ShowMessage(message);
             }
-            //销售出库单-审核时执行
-            else if (e.BarItemKey == "tbApprove" || e.BarItemKey == "tbSplitApprove")
+            //销售出库单-保存时执行
+            else if (e.BarItemKey== "tbSave") //(e.BarItemKey == "tbApprove" || e.BarItemKey == "tbSplitApprove")
             {
                 //执行审核相关操作
                 var result = generate.Approve(dhstr);
                 //当返回'Finish',提示成功;当异常时提示,异常信息
-                message = result == "Finish" ? $@"单据编号为'{dhstr}'的销售出库单,与条码系统交互审核成功! " : $@"出库数据与条码系统交互操作异常,原因:'{result}'";
+                message = result == "Finish" ? $@"单据编号为'{dhstr}'的销售出库单,与条码系统交互成功! " : $@"出库数据与条码系统交互操作异常,原因:'{result}'";
                 View.ShowMessage(message);
             }
         }
