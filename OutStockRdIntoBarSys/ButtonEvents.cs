@@ -25,7 +25,7 @@ namespace OutStockRdIntoBarSys
                 //执行反审核相关操作
                 var result = generate.Reject(dhstr);
                 //当返回'Finish',提示成功;当异常时提示,异常信息
-                message = result == "Finish" ? $@"单据编号为'{dhstr}'的销售出库单,与条码系统交互反审核成功! " : $@"出库数据与条码系统交互操作异常,原因:'{result}'";
+                message = result == "Finish" ? $@"单据编号为'{dhstr}'的销售出库单,与条码系统数据同步反审核成功! " : $@"出库数据与条码系统数据同步操作异常,原因:'{result}'";
                 View.ShowMessage(message);
             }
             //销售出库单-当点击 提交 审核时会执行
@@ -35,7 +35,7 @@ namespace OutStockRdIntoBarSys
                 //执行审核相关操作
                 var result = generate.Approve(dhstr);
                 //当返回'Finish',提示成功;当异常时提示,异常信息
-                message = result == "Finish" ? $@"单据编号为'{dhstr}'的销售出库单,与条码系统交互成功! " : $@"出库数据与条码系统交互操作异常,原因:'{result}'";
+                message = result == "Finish" ? $@"单据编号为'{dhstr}'的销售出库单,与条码系统数据同步成功! " : $@"出库数据与条码系统数据同步操作异常,原因:'{result}'";
                 View.ShowMessage(message);
             }
         }
