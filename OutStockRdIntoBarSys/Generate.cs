@@ -121,7 +121,7 @@ namespace OutStockRdIntoBarSys
                 //当发现在k3ViewDt没有记录,即作出如下提示
                 else
                 {
-                    result = $"单据没有在K3查询到相关记录,故不能同步,请联系管理员,(注:海外客户出库单不用理会此提示)";
+                    result = $"单据没有在K3查询到相关记录,故不能同步,请联系管理员(注:海外客户出库单不用理会此提示)";
                 }
             }
             catch (Exception ex)
