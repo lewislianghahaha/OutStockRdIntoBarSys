@@ -44,6 +44,10 @@ namespace OutStockRdIntoBarSys
             var uptemp = tempdt.UpBarTemp();
             //保存设置条码表不显示的记录
             var canneltemp = tempdt.CannelTemp();
+            //保存K3物料信息临时表(插入使用)
+            var materialintemp = tempdt.MaterialTemp();
+            //保存K3物料信息临时表(更新使用)
+            var materialuptemp = tempdt.MaterialTemp();
 
             try
             {
@@ -55,6 +59,39 @@ namespace OutStockRdIntoBarSys
                 //需k3ViewDt有记录才可以继续
                 if (k3ViewDt.Rows.Count > 0)
                 {
+                    //从k3ViewDt获取sku_no(物料编码),并用于放到K3视图VIEW_MATERIAL里获取相关数据，最后实现同步至T_K3Material表
+                    //1)通过k3ViewDt获取其sku_no,并组合成LIST数据集形式返回
+                    var materiallist = GetMaterialList(k3ViewDt);
+                    //2)通过获取到的materiallist分别获取K3Material视图记录 及 条码库.T_K3Material记录
+                    var k3MaterialDt = UseSqlSearchIntoDt(0, sqllist.Get_SearchK3ViewMaterialRecord(materiallist)).Copy();
+                    var barCodeMaterial = UseSqlSearchIntoDt(1, sqllist.Get_SearchMaterialRecord(materiallist)).Copy();
+                    //循环使用k3MaterialDt的记录,判断在barCodeMaterial是否有记录,是(更新)否(插入)
+                    //获取k3MaterialDt的表结构
+                    var k3MaterialTempdt = k3MaterialDt.Clone();
+
+                    foreach (DataRow rows in k3MaterialDt.Rows)
+                    {
+                        //将"当前"循环的rows行插入至临时表(k3MaterialTempdt) 注:需插入的列与临时表一致(包括列顺序),才可使用ImportRow()方法
+                        k3MaterialTempdt.ImportRow(rows);
+
+                        var dtlrows = barCodeMaterial.Select("sku_no='" + Convert.ToString(rows[0]) + "'").Length;
+
+                        //存在就放到materialupdatetemp临时表内
+                        if (dtlrows > 0)
+                        {
+                            materialuptemp.Merge(InsertDtIntoUpdateMaterialTempdt(k3MaterialTempdt, materialuptemp));
+                        }
+                        //不存在就放到materialinserttemp临时表内
+                        else
+                        {
+                            materialintemp.Merge(InsertDtIntoInsertMaterialTempDt(k3MaterialTempdt, materialintemp));
+                        }
+                        //当前行循环结束后将行记录删除;令k3MaterialTempdt只记录当前循环行信息,不包括以前循环的记录
+                        k3MaterialTempdt.Rows.Clear();
+                    }
+
+                    ////////////////////////////对销售出库单记录执行如下///////////////////////////////////
+
                     //若从T_K3SalesOut表没有找到相关记录,就使用k3ViewDt进行插入,有就进行更新
                     if (barCode.Rows.Count == 0)
                     {
@@ -130,6 +167,82 @@ namespace OutStockRdIntoBarSys
             }
 
             return result;
+        }
+
+        /// <summary>
+        /// 将相关物料信息插入至新增临时表
+        /// </summary>
+        /// <param name="k3MaterialViewDt"></param>
+        /// <param name="inserttemp"></param>
+        /// <returns></returns>
+        private DataTable InsertDtIntoInsertMaterialTempDt(DataTable k3MaterialViewDt, DataTable inserttemp)
+        {
+            foreach (DataRow rows in k3MaterialViewDt.Rows)
+            {
+                var newrow = inserttemp.NewRow();
+                newrow[0] = rows[0];   //sku_no
+                newrow[1] = rows[1];   //sku_desc
+                newrow[2] = rows[2];   //sku_desc_en
+                newrow[3] = rows[3];   //baseunit_desc
+                newrow[4] = rows[4];   //stockunit_desc
+                newrow[5] = rows[5];   //pack_spec
+                newrow[6] = rows[6];   //pack_gz
+                newrow[7] = rows[7];   //pack_xz
+                newrow[8] = rows[8];   //label_number
+                newrow[9] = rows[9];   //label_name
+                newrow[10] = rows[10]; //sku_catalog
+                newrow[11] = rows[11]; //pack_jz
+                newrow[12] = rows[12]; //化学品分类
+                newrow[13] = rows[13];                   //配比
+                newrow[14] = rows[14];                   //保质期
+                newrow[15] = rows[15];                   //主要成份
+                newrow[16] = rows[16];                   //储存温度
+                newrow[17] = rows[17];                   //毛重
+                newrow[18] = rows[18];                   //项目名称
+                newrow[19] = rows[19];                   //客户端物料编号
+                newrow[20] = rows[20];                   //配比标题
+                newrow[21] = DateTime.Now.ToLocalTime(); //FCreate_time
+                inserttemp.Rows.Add(newrow);
+            }
+            return inserttemp;
+        }
+
+        /// <summary>
+        /// 将相关物料信息插入至更新临时表
+        /// </summary>
+        /// <param name="k3MaterialViewDt"></param>
+        /// <param name="uptemp"></param>
+        /// <returns></returns>
+        private DataTable InsertDtIntoUpdateMaterialTempdt(DataTable k3MaterialViewDt, DataTable uptemp)
+        {
+            foreach (DataRow rows in k3MaterialViewDt.Rows)
+            {
+                var newrow = uptemp.NewRow();
+                newrow[0] = rows[0];   //sku_no
+                newrow[1] = rows[1];   //sku_desc
+                newrow[2] = rows[2];   //sku_desc_en
+                newrow[3] = rows[3];   //baseunit_desc
+                newrow[4] = rows[4];   //stockunit_desc
+                newrow[5] = rows[5];   //pack_spec
+                newrow[6] = rows[6];   //pack_gz
+                newrow[7] = rows[7];   //pack_xz
+                newrow[8] = rows[8];   //label_number
+                newrow[9] = rows[9];   //label_name
+                newrow[10] = rows[10]; //sku_catalog
+                newrow[11] = rows[11]; //pack_jz
+                newrow[12] = rows[12]; //化学品分类
+                newrow[13] = rows[13]; //配比
+                newrow[14] = rows[14]; //保质期
+                newrow[15] = rows[15]; //主要成份
+                newrow[16] = rows[16]; //储存温度
+                newrow[17] = rows[17]; //毛重
+                newrow[18] = rows[18]; //项目名称
+                newrow[19] = rows[19]; //客户端物料编号
+                newrow[20] = rows[20]; //配比标题
+                newrow[22] = DateTime.Now.ToLocalTime(); //Flastop_time
+                uptemp.Rows.Add(newrow);
+            }
+            return uptemp;
         }
 
         /// <summary>
@@ -217,6 +330,37 @@ namespace OutStockRdIntoBarSys
         }
 
         /// <summary>
+        /// 根据K3视图记录集获取其sku_no(物料编码)记录
+        /// </summary>
+        /// <param name="k3Viewdt"></param>
+        /// <returns></returns>
+        private string GetMaterialList(DataTable k3Viewdt)
+        {
+            var flistid = string.Empty;
+            //中转判断值
+            var tempstring = string.Empty;
+
+            foreach (DataRow row in k3Viewdt.Rows)
+            {
+                if (string.IsNullOrEmpty(flistid))
+                {
+                    flistid = "'" + Convert.ToString(Convert.ToString(row[8])) + "'";
+                    tempstring = Convert.ToString(Convert.ToString(row[8]));
+                }
+                //将相同的记录排除
+                else
+                {
+                    if (tempstring != Convert.ToString((row[8])))
+                    {
+                        flistid += "," + "'" + Convert.ToString(row[8]) + "'";
+                        tempstring = Convert.ToString(row[8]);
+                    }
+                }
+            }
+            return flistid;
+        }
+
+        /// <summary>
         /// 根据SQL语句查询得出对应的DT
         /// </summary>
         /// <param name="conid">0:连接K3数据库,1:连接条码库</param>
@@ -301,7 +445,7 @@ namespace OutStockRdIntoBarSys
         /// <summary>
         /// 建立更新模板相关信息
         /// </summary>
-        /// <param name="typeid">0:更新记录 1:更新FRemarkid=1</param>
+        /// <param name="typeid">0:更新记录 1:更新FRemarkid=1 2:更新T_K3Material记录</param>
         /// <param name="conn"></param>
         /// <param name="da"></param>
         /// <returns></returns>
@@ -326,6 +470,30 @@ namespace OutStockRdIntoBarSys
                     da.UpdateCommand.Parameters.Add("@doc_no", SqlDbType.NVarChar, 100, "doc_no");
                     da.UpdateCommand.Parameters.Add("@sku_no", SqlDbType.NVarChar, 100, "sku_no");
                     da.UpdateCommand.Parameters.Add("@FRemarkid", SqlDbType.Int, 8, "FRemarkid");
+                    da.UpdateCommand.Parameters.Add("@Flastop_time", SqlDbType.DateTime, 10, "Flastop_time");
+                    break;
+                case 2:
+                    da.UpdateCommand.Parameters.Add("@sku_no", SqlDbType.NVarChar, 200, "sku_no");
+                    da.UpdateCommand.Parameters.Add("@sku_desc", SqlDbType.NVarChar, 500, "sku_desc");
+                    da.UpdateCommand.Parameters.Add("@sku_desc_en", SqlDbType.NVarChar, 100, "sku_desc_en");
+                    da.UpdateCommand.Parameters.Add("@baseunit_desc", SqlDbType.NVarChar, 100, "baseunit_desc");
+                    da.UpdateCommand.Parameters.Add("@stockunit_desc", SqlDbType.NVarChar, 100, "stockunit_desc");
+                    da.UpdateCommand.Parameters.Add("@pack_spec", SqlDbType.Decimal, 4, "pack_spec");
+                    da.UpdateCommand.Parameters.Add("@pack_gz", SqlDbType.Decimal, 4, "pack_gz");
+                    da.UpdateCommand.Parameters.Add("@pack_xz", SqlDbType.Decimal, 4, "pack_xz");
+                    da.UpdateCommand.Parameters.Add("@label_number", SqlDbType.NVarChar, 200, "label_number");
+                    da.UpdateCommand.Parameters.Add("@label_name", SqlDbType.NVarChar, 200, "label_name");
+                    da.UpdateCommand.Parameters.Add("@sku_catalog", SqlDbType.NVarChar, 200, "sku_catalog");
+                    da.UpdateCommand.Parameters.Add("@pack_jz", SqlDbType.NVarChar, 100, "pack_jz");
+                    da.UpdateCommand.Parameters.Add("@化学品分类", SqlDbType.NVarChar, 300, "化学品分类");
+                    da.UpdateCommand.Parameters.Add("@配比", SqlDbType.NVarChar, 500, "配比");
+                    da.UpdateCommand.Parameters.Add("@保质期", SqlDbType.NVarChar, 100, "保质期");
+                    da.UpdateCommand.Parameters.Add("@主要成份", SqlDbType.NVarChar, 500, "主要成份");
+                    da.UpdateCommand.Parameters.Add("@储存温度", SqlDbType.NVarChar, 300, "储存温度");
+                    da.UpdateCommand.Parameters.Add("@毛重", SqlDbType.Decimal, 4, "毛重");
+                    da.UpdateCommand.Parameters.Add("@项目名称", SqlDbType.NVarChar, 100, "项目名称");
+                    da.UpdateCommand.Parameters.Add("@客户端物料编号", SqlDbType.NVarChar, 100, "客户端物料编号");
+                    da.UpdateCommand.Parameters.Add("@配比标题", SqlDbType.NVarChar, 100, "配比标题");
                     da.UpdateCommand.Parameters.Add("@Flastop_time", SqlDbType.DateTime, 10, "Flastop_time");
                     break;
             }

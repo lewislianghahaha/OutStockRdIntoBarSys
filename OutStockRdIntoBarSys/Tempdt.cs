@@ -217,5 +217,116 @@ namespace OutStockRdIntoBarSys
             }
             return dt;
         }
+
+        /// <summary>
+        /// 物料临时表(插入及更新使用)
+        /// </summary>
+        /// <returns></returns>
+        public DataTable MaterialTemp()
+        {
+            var dt = new DataTable();
+            for (var i = 0; i < 23; i++)
+            {
+                var dc = new DataColumn();
+
+                switch (i)
+                {
+                    case 0:
+                        dc.ColumnName = "sku_no";
+                        dc.DataType = Type.GetType("System.String");
+                        break;
+                    case 1:
+                        dc.ColumnName = "sku_desc";
+                        dc.DataType = Type.GetType("System.String");
+                        break;
+                    case 2:
+                        dc.ColumnName = "sku_desc_en";
+                        dc.DataType = Type.GetType("System.String");
+                        break;
+                    case 3:
+                        dc.ColumnName = "baseunit_desc";
+                        dc.DataType = Type.GetType("System.String");
+                        break;
+                    case 4:
+                        dc.ColumnName = "stockunit_desc";
+                        dc.DataType = Type.GetType("System.String");
+                        break;
+                    case 5:
+                        dc.ColumnName = "pack_spec";
+                        dc.DataType = Type.GetType("System.Decimal");
+                        break;
+                    case 6:
+                        dc.ColumnName = "pack_gz";
+                        dc.DataType = Type.GetType("System.Decimal");
+                        break;
+                    case 7:
+                        dc.ColumnName = "pack_xz";
+                        dc.DataType = Type.GetType("System.Decimal");
+                        break;
+                    case 8:
+                        dc.ColumnName = "label_number";
+                        dc.DataType = Type.GetType("System.String");
+                        break;
+                    case 9:
+                        dc.ColumnName = "label_name";
+                        dc.DataType = Type.GetType("System.String");
+                        break;
+                    case 10:
+                        dc.ColumnName = "sku_catalog";
+                        dc.DataType = Type.GetType("System.String");
+                        break;
+                    case 11:
+                        dc.ColumnName = "pack_jz";
+                        dc.DataType = Type.GetType("System.String");
+                        break;
+                    case 12:
+                        dc.ColumnName = "化学品分类";
+                        dc.DataType = Type.GetType("System.String");
+                        break;
+                    case 13:
+                        dc.ColumnName = "配比";
+                        dc.DataType = Type.GetType("System.String");
+                        break;
+                    case 14:
+                        dc.ColumnName = "保质期";
+                        dc.DataType = Type.GetType("System.String");
+                        break;
+                    case 15:
+                        dc.ColumnName = "主要成份";
+                        dc.DataType = Type.GetType("System.String");
+                        break;
+                    case 16:
+                        dc.ColumnName = "储存温度";
+                        dc.DataType = Type.GetType("System.String");
+                        break;
+                    case 17:
+                        dc.ColumnName = "毛重";
+                        dc.DataType = Type.GetType("System.Decimal");
+                        break;
+                    case 18:
+                        dc.ColumnName = "项目名称";
+                        dc.DataType = Type.GetType("System.String");
+                        break;
+                    case 19:
+                        dc.ColumnName = "客户端物料编号";
+                        dc.DataType = Type.GetType("System.String");
+                        break;
+                    case 20:
+                        dc.ColumnName = "配比标题";
+                        dc.DataType = Type.GetType("System.String");
+                        break;
+                    case 21:
+                        dc.ColumnName = "FCreate_time";
+                        dc.DataType = Type.GetType("System.DateTime");
+                        break;
+                    case 22:
+                        dc.ColumnName = "Flastop_time";
+                        dc.DataType = Type.GetType("System.DateTime");
+                        break;
+                }
+                dt.Columns.Add(dc);
+            }
+            return dt;
+        }
     }
 }
