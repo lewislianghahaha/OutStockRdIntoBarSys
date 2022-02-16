@@ -119,16 +119,14 @@ namespace OutStockRdIntoBarSys
                             k3Tempdt.Rows.Clear();
                         }
 
-                        //var a3 = canneltemp.Copy();
-
                         //检测k3ViewDt内的记录是否在barCode内存在,是:更新  否:插入
                         foreach (DataRow rows in k3ViewDt.Rows)
                         {
-                            var dtlrows = barCode.Select("doc_no='" + Convert.ToString(rows[0]) + "' and sku_no='" + Convert.ToString(rows[8]) + "'").Length;
-
                             //将"当前"循环的rows行插入至临时表(K3TempDt) 注:需插入的列与临时表一致(包括列顺序),才可使用ImportRow()方法
                             k3Tempdt.ImportRow(rows);
                             //var a = k3Tempdt.Copy();
+
+                            var dtlrows = barCode.Select("doc_no='" + Convert.ToString(rows[0]) + "' and sku_no='" + Convert.ToString(rows[8]) + "'").Length;
 
                             //若存在,就更新
                             if (dtlrows > 0)
@@ -143,8 +141,6 @@ namespace OutStockRdIntoBarSys
                             //当前行循环结束后将行记录删除;令k3Tempdt只记录当前循环行信息,不包括以前循环的记录
                             k3Tempdt.Rows.Clear();
                         }
-                        //var a1 = uptemp.Copy();
-                        //var b1 = inserttemp.Copy();
                     }
                     //将得出的结果进行插入或更新
                     if (inserttemp.Rows.Count > 0)
@@ -154,6 +150,12 @@ namespace OutStockRdIntoBarSys
                     //将需要取消的记录更新T_K3SalesOut.FRemarkid
                     if (canneltemp.Rows.Count > 0)
                         UpdateDbFromDt("T_K3SalesOut", canneltemp, 1);
+                    //将需要插入到T_K3Material的记录进行插入
+                    if (materialintemp.Rows.Count > 0)
+                        ImportDtToDb("T_K3Material", materialintemp);
+                    //将需要更新到T_K3Material的记录进行更新
+                    if (materialuptemp.Rows.Count > 0)
+                        UpdateDbFromDt("T_K3Material", materialuptemp, 2);
                 }
                 //当发现在k3ViewDt没有记录,即作出如下提示
                 else
@@ -180,19 +182,19 @@ namespace OutStockRdIntoBarSys
             foreach (DataRow rows in k3MaterialViewDt.Rows)
             {
                 var newrow = inserttemp.NewRow();
-                newrow[0] = rows[0];   //sku_no
-                newrow[1] = rows[1];   //sku_desc
-                newrow[2] = rows[2];   //sku_desc_en
-                newrow[3] = rows[3];   //baseunit_desc
-                newrow[4] = rows[4];   //stockunit_desc
-                newrow[5] = rows[5];   //pack_spec
-                newrow[6] = rows[6];   //pack_gz
-                newrow[7] = rows[7];   //pack_xz
-                newrow[8] = rows[8];   //label_number
-                newrow[9] = rows[9];   //label_name
-                newrow[10] = rows[10]; //sku_catalog
-                newrow[11] = rows[11]; //pack_jz
-                newrow[12] = rows[12]; //化学品分类
+                newrow[0] = rows[0];                     //sku_no
+                newrow[1] = rows[1];                     //sku_desc
+                newrow[2] = rows[2];                     //sku_desc_en
+                newrow[3] = rows[3];                     //baseunit_desc
+                newrow[4] = rows[4];                     //stockunit_desc
+                newrow[5] = rows[5];                     //pack_spec
+                newrow[6] = rows[6];                     //pack_gz
+                newrow[7] = rows[7];                     //pack_xz
+                newrow[8] = rows[8];                     //label_number
+                newrow[9] = rows[9];                     //label_name
+                newrow[10] = rows[10];                   //sku_catalog
+                newrow[11] = rows[11];                   //pack_jz
+                newrow[12] = rows[12];                   //化学品分类
                 newrow[13] = rows[13];                   //配比
                 newrow[14] = rows[14];                   //保质期
                 newrow[15] = rows[15];                   //主要成份
@@ -218,27 +220,27 @@ namespace OutStockRdIntoBarSys
             foreach (DataRow rows in k3MaterialViewDt.Rows)
             {
                 var newrow = uptemp.NewRow();
-                newrow[0] = rows[0];   //sku_no
-                newrow[1] = rows[1];   //sku_desc
-                newrow[2] = rows[2];   //sku_desc_en
-                newrow[3] = rows[3];   //baseunit_desc
-                newrow[4] = rows[4];   //stockunit_desc
-                newrow[5] = rows[5];   //pack_spec
-                newrow[6] = rows[6];   //pack_gz
-                newrow[7] = rows[7];   //pack_xz
-                newrow[8] = rows[8];   //label_number
-                newrow[9] = rows[9];   //label_name
-                newrow[10] = rows[10]; //sku_catalog
-                newrow[11] = rows[11]; //pack_jz
-                newrow[12] = rows[12]; //化学品分类
-                newrow[13] = rows[13]; //配比
-                newrow[14] = rows[14]; //保质期
-                newrow[15] = rows[15]; //主要成份
-                newrow[16] = rows[16]; //储存温度
-                newrow[17] = rows[17]; //毛重
-                newrow[18] = rows[18]; //项目名称
-                newrow[19] = rows[19]; //客户端物料编号
-                newrow[20] = rows[20]; //配比标题
+                newrow[0] = rows[0];                     //sku_no
+                newrow[1] = rows[1];                     //sku_desc
+                newrow[2] = rows[2];                     //sku_desc_en
+                newrow[3] = rows[3];                     //baseunit_desc
+                newrow[4] = rows[4];                     //stockunit_desc
+                newrow[5] = rows[5];                     //pack_spec
+                newrow[6] = rows[6];                     //pack_gz
+                newrow[7] = rows[7];                     //pack_xz
+                newrow[8] = rows[8];                     //label_number
+                newrow[9] = rows[9];                     //label_name
+                newrow[10] = rows[10];                   //sku_catalog
+                newrow[11] = rows[11];                   //pack_jz
+                newrow[12] = rows[12];                   //化学品分类
+                newrow[13] = rows[13];                   //配比
+                newrow[14] = rows[14];                   //保质期
+                newrow[15] = rows[15];                   //主要成份
+                newrow[16] = rows[16];                   //储存温度
+                newrow[17] = rows[17];                   //毛重
+                newrow[18] = rows[18];                   //项目名称
+                newrow[19] = rows[19];                   //客户端物料编号
+                newrow[20] = rows[20];                   //配比标题
                 newrow[22] = DateTime.Now.ToLocalTime(); //Flastop_time
                 uptemp.Rows.Add(newrow);
             }
