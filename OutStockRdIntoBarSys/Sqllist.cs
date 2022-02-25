@@ -105,7 +105,7 @@
 							             a.sku_catalog ,a.pack_jz ,
 							             a.化学品分类,a.配比,a.保质期,a.主要成份,
 							             a.储存温度,a.毛重,a.项目名称,a.客户端物料编号,a.配比标题,
-							             a.FCreate_time,a.Flastop_time
+							             a.FCreate_time,a.Flastop_time,a.标签打印名称
                             FROM T_K3Material a
                           ";
             }
@@ -143,7 +143,7 @@
 							                化学品分类=@化学品分类,配比=@配比,保质期=@保质期,主要成份=@主要成份,
 							                储存温度=@储存温度,毛重=@毛重,项目名称=@项目名称,客户端物料编号=@客户端物料编号,
                                             配比标题=@配比标题,
-							                Flastop_time=@Flastop_time
+							                Flastop_time=@Flastop_time,标签打印名称=@标签打印名称
                                     WHERE sku_no=@sku_no
                                ";
                     break;

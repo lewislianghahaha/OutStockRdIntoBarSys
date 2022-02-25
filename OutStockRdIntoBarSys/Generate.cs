@@ -204,6 +204,7 @@ namespace OutStockRdIntoBarSys
                 newrow[19] = rows[19];                   //客户端物料编号
                 newrow[20] = rows[20];                   //配比标题
                 newrow[21] = DateTime.Now.ToLocalTime(); //FCreate_time
+                newrow[23] = rows[21];                   //标签打印名称
                 inserttemp.Rows.Add(newrow);
             }
             return inserttemp;
@@ -242,6 +243,7 @@ namespace OutStockRdIntoBarSys
                 newrow[19] = rows[19];                   //客户端物料编号
                 newrow[20] = rows[20];                   //配比标题
                 newrow[22] = DateTime.Now.ToLocalTime(); //Flastop_time
+                newrow[23] = rows[21];                   //标签打印名称
                 uptemp.Rows.Add(newrow);
             }
             return uptemp;
@@ -497,6 +499,7 @@ namespace OutStockRdIntoBarSys
                     da.UpdateCommand.Parameters.Add("@客户端物料编号", SqlDbType.NVarChar, 100, "客户端物料编号");
                     da.UpdateCommand.Parameters.Add("@配比标题", SqlDbType.NVarChar, 100, "配比标题");
                     da.UpdateCommand.Parameters.Add("@Flastop_time", SqlDbType.DateTime, 10, "Flastop_time");
+                    da.UpdateCommand.Parameters.Add("@标签打印名称", SqlDbType.NVarChar, 500, "标签打印名称");
                     break;
             }
             return da;

@@ -225,7 +225,7 @@ namespace OutStockRdIntoBarSys
         public DataTable MaterialTemp()
         {
             var dt = new DataTable();
-            for (var i = 0; i < 23; i++)
+            for (var i = 0; i < 24; i++)
             {
                 var dc = new DataColumn();
 
@@ -322,6 +322,10 @@ namespace OutStockRdIntoBarSys
                     case 22:
                         dc.ColumnName = "Flastop_time";
                         dc.DataType = Type.GetType("System.DateTime");
+                        break;
+                    case 23:
+                        dc.ColumnName = "标签打印名称";
+                        dc.DataType = Type.GetType("System.String");
                         break;
                 }
                 dt.Columns.Add(dc);
