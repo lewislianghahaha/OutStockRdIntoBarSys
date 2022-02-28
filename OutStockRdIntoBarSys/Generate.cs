@@ -308,6 +308,7 @@ namespace OutStockRdIntoBarSys
                 newrow[3] = Convert.ToInt32(rows[3]);      //line_no
                 newrow[4] = Convert.ToInt32(rows[24]);     //FRemarkid
                 newrow[5] = Convert.ToDateTime(rows[26]);  //Flastop_time
+                newrow[6] = Convert.ToDateTime(rows[2]);   //op_time
                 uptemp.Rows.Add(newrow);
             }
             return uptemp;
@@ -469,6 +470,7 @@ namespace OutStockRdIntoBarSys
                     da.UpdateCommand.Parameters.Add("@line_no", SqlDbType.Int, 8, "line_no");
                     da.UpdateCommand.Parameters.Add("@FRemarkid", SqlDbType.Int, 8, "FRemarkid");
                     da.UpdateCommand.Parameters.Add("@Flastop_time", SqlDbType.DateTime, 10, "Flastop_time");
+                    da.UpdateCommand.Parameters.Add("@op_time", SqlDbType.DateTime, 10, "op_time");
                     break;
                 case 1:
                     da.UpdateCommand.Parameters.Add("@doc_no", SqlDbType.NVarChar, 100, "doc_no");

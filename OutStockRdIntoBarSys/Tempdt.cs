@@ -143,7 +143,7 @@ namespace OutStockRdIntoBarSys
         public DataTable UpBarTemp()
         {
             var dt = new DataTable();
-            for (var i = 0; i < 6; i++)
+            for (var i = 0; i < 7; i++)
             {
                 var dc = new DataColumn();
 
@@ -173,6 +173,11 @@ namespace OutStockRdIntoBarSys
                     //最后修改日期(更新时使用)
                     case 5:
                         dc.ColumnName = "Flastop_time";
+                        dc.DataType = Type.GetType("System.DateTime");
+                        break;
+                    //op_time(操作时间,更新时使用)
+                    case 6:
+                        dc.ColumnName = "op_time";
                         dc.DataType = Type.GetType("System.DateTime");
                         break;
                 }
