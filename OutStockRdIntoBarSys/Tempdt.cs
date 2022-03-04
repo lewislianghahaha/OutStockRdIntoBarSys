@@ -306,7 +306,7 @@ namespace OutStockRdIntoBarSys
                         break;
                     case 17:
                         dc.ColumnName = "毛重";
-                        dc.DataType = Type.GetType("System.Decimal");
+                        dc.DataType = Type.GetType("System.String");
                         break;
                     case 18:
                         dc.ColumnName = "项目名称";

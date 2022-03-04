@@ -496,7 +496,7 @@ namespace OutStockRdIntoBarSys
                     da.UpdateCommand.Parameters.Add("@保质期", SqlDbType.NVarChar, 100, "保质期");
                     da.UpdateCommand.Parameters.Add("@主要成份", SqlDbType.NVarChar, 500, "主要成份");
                     da.UpdateCommand.Parameters.Add("@储存温度", SqlDbType.NVarChar, 300, "储存温度");
-                    da.UpdateCommand.Parameters.Add("@毛重", SqlDbType.Decimal, 4, "毛重");
+                    da.UpdateCommand.Parameters.Add("@毛重", SqlDbType.NVarChar, 100, "毛重");
                     da.UpdateCommand.Parameters.Add("@项目名称", SqlDbType.NVarChar, 100, "项目名称");
                     da.UpdateCommand.Parameters.Add("@客户端物料编号", SqlDbType.NVarChar, 100, "客户端物料编号");
                     da.UpdateCommand.Parameters.Add("@配比标题", SqlDbType.NVarChar, 100, "配比标题");
