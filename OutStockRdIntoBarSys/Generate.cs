@@ -309,6 +309,7 @@ namespace OutStockRdIntoBarSys
                 newrow[4] = Convert.ToInt32(rows[24]);     //FRemarkid
                 newrow[5] = Convert.ToDateTime(rows[26]);  //Flastop_time
                 newrow[6] = Convert.ToDateTime(rows[2]);   //op_time
+                newrow[7] = Convert.ToString(rows[7]);     //customer_desc
                 uptemp.Rows.Add(newrow);
             }
             return uptemp;
