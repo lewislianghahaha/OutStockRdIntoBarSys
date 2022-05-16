@@ -471,6 +471,7 @@ namespace OutStockRdIntoBarSys
                     da.UpdateCommand.Parameters.Add("@FRemarkid", SqlDbType.Int, 8, "FRemarkid");
                     da.UpdateCommand.Parameters.Add("@Flastop_time", SqlDbType.DateTime, 10, "Flastop_time");
                     da.UpdateCommand.Parameters.Add("@op_time", SqlDbType.DateTime, 10, "op_time");
+                    da.UpdateCommand.Parameters.Add("@customer_desc",SqlDbType.NVarChar,500, "customer_desc");
                     break;
                 case 1:
                     da.UpdateCommand.Parameters.Add("@doc_no", SqlDbType.NVarChar, 100, "doc_no");

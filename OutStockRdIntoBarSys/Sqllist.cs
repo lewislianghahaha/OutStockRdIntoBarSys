@@ -124,7 +124,7 @@
             {
                 case 0:
                     _result = @"
-                                UPDATE dbo.T_K3SalesOut SET qty_req=@qty_req,line_no=@line_no,FRemarkid=@FRemarkid,Flastop_time=@Flastop_time,op_time=@op_time
+                                UPDATE dbo.T_K3SalesOut SET qty_req=@qty_req,line_no=@line_no,FRemarkid=@FRemarkid,Flastop_time=@Flastop_time,op_time=@op_time,customer_desc=@customer_desc
                                 WHERE doc_no=@doc_no and sku_no=@sku_no";
                     break;
                 case 1:
