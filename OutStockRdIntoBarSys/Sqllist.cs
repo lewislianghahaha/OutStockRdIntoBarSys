@@ -84,7 +84,7 @@
             if (typeid == 0)
             {
                 _result = $@"
-                          SELECT Top 1 a.doc_no,a.sku_no,a.qty_req,a.line_no,a.FRemarkid,a.Flastop_time,a.op_time
+                          SELECT Top 1 a.doc_no,a.sku_no,a.qty_req,a.line_no,a.FRemarkid,a.Flastop_time,a.op_time,a.customer_desc
                           FROM T_K3SalesOut a
                         ";
             }
