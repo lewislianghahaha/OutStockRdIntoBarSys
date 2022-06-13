@@ -84,7 +84,7 @@
             if (typeid == 0)
             {
                 _result = $@"
-                          SELECT Top 1 a.doc_no,a.sku_no,a.qty_req,a.line_no,a.FRemarkid,a.Flastop_time,a.op_time,a.customer_desc
+                          SELECT Top 1 a.doc_no,a.sku_no,a.qty_req,a.line_no,a.FRemarkid,a.Flastop_time,a.op_time,a.customer_desc,a.site_desc2
                           FROM T_K3SalesOut a
                         ";
             }
@@ -124,7 +124,8 @@
             {
                 case 0:
                     _result = @"
-                                UPDATE dbo.T_K3SalesOut SET qty_req=@qty_req,line_no=@line_no,FRemarkid=@FRemarkid,Flastop_time=@Flastop_time,op_time=@op_time,customer_desc=@customer_desc
+                                UPDATE dbo.T_K3SalesOut SET qty_req=@qty_req,line_no=@line_no,FRemarkid=@FRemarkid,Flastop_time=@Flastop_time,op_time=@op_time,
+                                                            customer_desc=@customer_desc,site_desc2=@site_desc2
                                 WHERE doc_no=@doc_no and sku_no=@sku_no";
                     break;
                 case 1:

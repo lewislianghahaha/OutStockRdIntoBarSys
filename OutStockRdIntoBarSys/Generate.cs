@@ -310,6 +310,7 @@ namespace OutStockRdIntoBarSys
                 newrow[5] = Convert.ToDateTime(rows[26]);  //Flastop_time
                 newrow[6] = Convert.ToDateTime(rows[2]);   //op_time
                 newrow[7] = Convert.ToString(rows[7]);     //customer_desc
+                newrow[8] = Convert.ToString(rows[22]);    //site_desc2
                 uptemp.Rows.Add(newrow);
             }
             return uptemp;
@@ -473,6 +474,7 @@ namespace OutStockRdIntoBarSys
                     da.UpdateCommand.Parameters.Add("@Flastop_time", SqlDbType.DateTime, 10, "Flastop_time");
                     da.UpdateCommand.Parameters.Add("@op_time", SqlDbType.DateTime, 10, "op_time");
                     da.UpdateCommand.Parameters.Add("@customer_desc",SqlDbType.NVarChar,500, "customer_desc");
+                    da.UpdateCommand.Parameters.Add("@site_desc2", SqlDbType.NVarChar, 500, "site_desc2");
                     break;
                 case 1:
                     da.UpdateCommand.Parameters.Add("@doc_no", SqlDbType.NVarChar, 100, "doc_no");

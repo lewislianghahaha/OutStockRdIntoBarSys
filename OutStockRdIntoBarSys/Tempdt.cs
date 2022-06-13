@@ -143,7 +143,7 @@ namespace OutStockRdIntoBarSys
         public DataTable UpBarTemp()
         {
             var dt = new DataTable();
-            for (var i = 0; i < 8; i++)
+            for (var i = 0; i < 9; i++)
             {
                 var dc = new DataColumn();
 
@@ -184,6 +184,11 @@ namespace OutStockRdIntoBarSys
                     case 7:
                         dc.ColumnName = "customer_desc";
                         dc.DataType = Type.GetType("System.String");
+                        break;
+                    //site_desc2
+                    case 8:
+                        dc.ColumnName = "site_desc2";
+                        dc.DataType = Type.GetType("System.String"); 
                         break;
                 }
                 dt.Columns.Add(dc);
