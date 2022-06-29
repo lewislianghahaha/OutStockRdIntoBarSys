@@ -26,7 +26,11 @@ namespace OutStockRdIntoBarSys
                 var result = generate.Reject(dhstr);
                 //当返回'Finish',提示成功;当异常时提示,异常信息
                 message = result == "Finish" ? $@"单据编号为'{dhstr}'的销售出库单,与条码系统数据同步反审核成功! " : $@"出库数据与条码系统数据同步操作异常,原因:'{result}'";
-                View.ShowMessage(message);
+                //当出现异常时才提示
+                if (result != "Finish")
+                {
+                    View.ShowMessage(message);
+                }
             }
             //销售出库单-当点击 提交 审核时会执行
             else if (/*e.BarItemKey== "tbSplitSave" || e.BarItemKey== "tbSave" || */e.BarItemKey== "tbSplitSubmit" || e.BarItemKey== "tbSubmit" 
@@ -36,7 +40,11 @@ namespace OutStockRdIntoBarSys
                 var result = generate.Approve(dhstr);
                 //当返回'Finish',提示成功;当异常时提示,异常信息
                 message = result == "Finish" ? $@"单据编号为'{dhstr}'的销售出库单,与条码系统数据同步成功! " : $@"出库数据与条码系统数据同步操作异常,原因:'{result}'";
-                View.ShowMessage(message);
+                //当出现异常时才提示
+                if (result != "Finish")
+                {
+                   View.ShowMessage(message);
+                }
             }
         }
     }
